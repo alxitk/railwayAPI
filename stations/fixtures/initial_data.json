@@ -1,0 +1,137 @@
+[
+  {
+    "model": "stations.station",
+    "pk": 1,
+    "fields": {"name": "Kyiv Central", "latitude": 50.4501, "longitude": 30.5234}
+  },
+  {
+    "model": "stations.station",
+    "pk": 2,
+    "fields": {"name": "Lviv Main", "latitude": 49.8397, "longitude": 24.0297}
+  },
+  {
+    "model": "stations.station",
+    "pk": 3,
+    "fields": {"name": "Odesa Station", "latitude": 46.4825, "longitude": 30.7233}
+  },
+
+  {
+    "model": "stations.route",
+    "pk": 1,
+    "fields": {"source": 1, "destination": 2, "distance": 540.0}
+  },
+  {
+    "model": "stations.route",
+    "pk": 2,
+    "fields": {"source": 2, "destination": 3, "distance": 790.0}
+  },
+  {
+    "model": "stations.route",
+    "pk": 3,
+    "fields": {"source": 1, "destination": 3, "distance": 475.0}
+  },
+
+  {
+    "model": "stations.crew",
+    "pk": 1,
+    "fields": {"first_name": "Ivan", "last_name": "Petrenko"}
+  },
+  {
+    "model": "stations.crew",
+    "pk": 2,
+    "fields": {"first_name": "Olena", "last_name": "Shevchenko"}
+  },
+  {
+    "model": "stations.crew",
+    "pk": 3,
+    "fields": {"first_name": "Mykola", "last_name": "Bondar"}
+  },
+
+  {
+    "model": "stations.traintype",
+    "pk": 1,
+    "fields": {"name": "Passenger"}
+  },
+  {
+    "model": "stations.traintype",
+    "pk": 2,
+    "fields": {"name": "Cargo"}
+  },
+
+  {
+    "model": "stations.train",
+    "pk": 1,
+    "fields": {"name": "Intercity+", "cargo_number": 10, "places_in_cargo": 50, "train_type": 1}
+  },
+  {
+    "model": "stations.train",
+    "pk": 2,
+    "fields": {"name": "Night Express", "cargo_number": 15, "places_in_cargo": 40, "train_type": 1}
+  },
+  {
+    "model": "stations.train",
+    "pk": 3,
+    "fields": {"name": "CargoMaster", "cargo_number": 20, "places_in_cargo": 0, "train_type": 2}
+  },
+
+  {
+    "model": "stations.journey",
+    "pk": 1,
+    "fields": {
+      "route": 1,
+      "train": 1,
+      "departure_time": "2025-10-10T08:00:00Z",
+      "arrival_time": "2025-10-10T14:00:00Z",
+      "crew": [1, 2]
+    }
+  },
+  {
+    "model": "stations.journey",
+    "pk": 2,
+    "fields": {
+      "route": 2,
+      "train": 2,
+      "departure_time": "2025-10-11T20:00:00Z",
+      "arrival_time": "2025-10-12T06:00:00Z",
+      "crew": [2, 3]
+    }
+  },
+
+  {
+    "model": "user.user",
+    "pk": 1,
+    "fields": {"username": "alex", "email": "alex@example.com", "password": "pbkdf2_sha256$260000$test$hashed_pass"}
+  },
+  {
+    "model": "user.user",
+    "pk": 2,
+    "fields": {"username": "maria", "email": "maria@example.com", "password": "pbkdf2_sha256$260000$test$hashed_pass"}
+  },
+
+  {
+    "model": "stations.order",
+    "pk": 1,
+    "fields": {"user": 1, "created_at": "2025-10-04T12:00:00Z"}
+  },
+  {
+    "model": "stations.order",
+    "pk": 2,
+    "fields": {"user": 2, "created_at": "2025-10-04T13:00:00Z"}
+  },
+
+  {
+    "model": "stations.ticket",
+    "pk": 1,
+    "fields": {"cargo_number": 1, "seat_number": 12, "journey": 1, "order": 1}
+  },
+  {
+    "model": "stations.ticket",
+    "pk": 2,
+    "fields": {"cargo_number": 2, "seat_number": 5, "journey": 1, "order": 2}
+  },
+  {
+    "model": "stations.ticket",
+    "pk": 3,
+    "fields": {"cargo_number": 1, "seat_number": 20, "journey": 2, "order": 1}
+  }
+]
