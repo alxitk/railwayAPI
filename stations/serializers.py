@@ -68,11 +68,7 @@ class JourneyDetailSerializer(serializers.ModelSerializer):
         queryset=Route.objects.all(),
     )
     train = serializers.StringRelatedField(read_only=True)
-    crew = serializers.SlugRelatedField(
-        read_only=True,
-        many=True,
-        slug_field="full_name",
-    )
+    crew = CrewSerializer(many=True, read_only=True)
     class Meta:
         model = Journey
         fields = "__all__"
