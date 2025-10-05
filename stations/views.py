@@ -1,9 +1,10 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from stations.models import Station, Crew, TrainType, Train
+from stations.models import Station, Crew, TrainType, Train, Route
 from stations.permissions import IsAdminOrIfAuthenticatedReadOnly
-from stations.serializers import StationSerializer, CrewSerializer, TrainTypeSerializer, TrainSerializer
+from stations.serializers import StationSerializer, CrewSerializer, TrainTypeSerializer, TrainSerializer, \
+    RouteSerializer
 
 
 class StationViewSet(GenericViewSet,
@@ -33,4 +34,12 @@ class TrainTypeViewSet(GenericViewSet,
 class TrainViewSet(ModelViewSet):
     queryset = Train.objects.all()
     serializer_class = TrainSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+
+class RouteViewSet(GenericViewSet,
+                     mixins.CreateModelMixin,
+                     mixins.ListModelMixin,):
+    queryset = Route.objects.all()
+    serializer_class = RouteSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
