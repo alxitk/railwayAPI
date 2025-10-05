@@ -25,6 +25,10 @@ class Route(models.Model):
     )
     distance = models.FloatField()
 
+    @property
+    def full_route(self):
+        return f"{self.source.name} -> {self.destination.name}"
+
     def __str__(self):
         return f"{self.source} → {self.destination}"
 
@@ -32,6 +36,10 @@ class Route(models.Model):
 class Crew(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
