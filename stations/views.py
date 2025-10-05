@@ -1,10 +1,10 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from stations.models import Station, Crew, TrainType, Train, Route
+from stations.models import Station, Crew, TrainType, Train, Route, Journey
 from stations.permissions import IsAdminOrIfAuthenticatedReadOnly
 from stations.serializers import StationSerializer, CrewSerializer, TrainTypeSerializer, TrainSerializer, \
-    RouteSerializer
+    RouteSerializer, JourneyListSerializer, JourneyDetailSerializer, JourneySerializer
 
 
 class StationViewSet(GenericViewSet,
@@ -43,3 +43,15 @@ class RouteViewSet(GenericViewSet,
     queryset = Route.objects.all()
     serializer_class = RouteSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+
+class JourneyViewSet(ModelViewSet):
+    queryset = Journey.objects.all()
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return JourneyListSerializer
+        elif self.action == "retrieve":
+            return JourneyDetailSerializer
+        return JourneySerializer

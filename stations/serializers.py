@@ -1,6 +1,7 @@
+from django.template.defaultfilters import first
 from rest_framework import serializers
 
-from stations.models import Station, Crew, TrainType, Train, Route
+from stations.models import Station, Crew, TrainType, Train, Route, Journey
 
 
 class StationSerializer(serializers.ModelSerializer):
@@ -46,3 +47,32 @@ class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = ("id", "distance", "source", "destination")
+
+
+class JourneySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journey
+        fields = "__all__"
+
+
+class JourneyListSerializer(JourneySerializer):
+    route = serializers.StringRelatedField(read_only=True)
+    train = serializers.StringRelatedField(read_only=True)
+    crew = serializers.StringRelatedField(read_only=True, many=True)
+
+
+class JourneyDetailSerializer(serializers.ModelSerializer):
+    route = serializers.SlugRelatedField(
+        read_only=False,
+        slug_field="full_route",
+        queryset=Route.objects.all(),
+    )
+    train = serializers.StringRelatedField(read_only=True)
+    crew = serializers.SlugRelatedField(
+        read_only=True,
+        many=True,
+        slug_field="full_name",
+    )
+    class Meta:
+        model = Journey
+        fields = "__all__"
