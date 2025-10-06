@@ -1,7 +1,7 @@
 from django.template.defaultfilters import first
 from rest_framework import serializers
 
-from stations.models import Station, Crew, TrainType, Train, Route, Journey
+from stations.models import Station, Crew, TrainType, Train, Route, Journey, Ticket
 
 
 class StationSerializer(serializers.ModelSerializer):
@@ -72,3 +72,10 @@ class JourneyDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journey
         fields = "__all__"
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = "__all__"
+
