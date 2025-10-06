@@ -1,4 +1,8 @@
+from itertools import count
+
+from django.conf import settings
 from django.db import models
+from rest_framework.exceptions import ValidationError
 
 from user.models import User
 
@@ -54,7 +58,7 @@ class TrainType(models.Model):
 
 class Train(models.Model):
     name = models.CharField(max_length=100)
-    cargo_number = models.IntegerField()
+    cargo = models.IntegerField()
     places_in_cargo = models.IntegerField()
     train_type = models.ForeignKey(TrainType, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -75,7 +79,11 @@ class Journey(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     def __str__(self):
         return f"{self.created_at} {self.user}"
@@ -86,6 +94,41 @@ class Ticket(models.Model):
     seat_number = models.IntegerField()
     journey = models.ForeignKey(Journey, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("cargo_number", "seat_number", "journey")
+
+    @staticmethod
+    def validate_ticket(cargo_number, seat_number, journey, error_to_raise):
+        for ticket_attr_value, ticket_attr_name, journey_attr_train_name in [
+            (cargo_number, "cargo_number", "cargo"),
+            (seat_number, "seat_number", "places_in_cargo"),
+        ]:
+            count_attrs = getattr(journey.train, journey_attr_train_name)
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise error_to_raise({
+                    ticket_attr_name: f"{ticket_attr_name} must be between 1 and {count_attrs}"
+                })
+    def clean(self):
+        Ticket.validate_ticket(
+            self.cargo_number,
+            self.seat_number,
+            self.journey,
+            ValidationError,
+        )
+
+    def save(
+        self,
+        *args,
+        force_insert=False,
+        force_update=False,
+        using=None,
+        update_fields=None,
+    ):
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def __str__(self):
         return f"{self.cargo_number} {self.seat_number} {self.journey}"

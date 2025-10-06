@@ -11,7 +11,7 @@ from stations.models import (Station,
 
 @admin.register(Train)
 class TrainAdmin(admin.ModelAdmin):
-    list_display = ("name", "cargo_number", "places_in_cargo", "train_type")
+    list_display = ("name", "cargo", "places_in_cargo", "train_type")
     list_filter = ("train_type",)
 
 admin.site.register(Station)
