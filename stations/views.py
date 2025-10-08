@@ -33,17 +33,37 @@ class TrainTypeViewSet(GenericViewSet,
 
 
 class TrainViewSet(ModelViewSet):
-    queryset = Train.objects.all().select_related("train_type")
+    queryset = Train.objects.all()
     serializer_class = TrainSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_queryset(self):
+        queryset = Train.objects.all().select_related("train_type")
+        train_type = self.request.query_params.get("train_type")
+
+        if train_type:
+            train_type_ids = [int(str_id) for str_id in train_type.split(",")]
+            queryset = queryset.filter(train_type__id__in=train_type_ids)
+
+        return queryset
 
 
 class RouteViewSet(GenericViewSet,
                      mixins.CreateModelMixin,
                      mixins.ListModelMixin,):
-    queryset = Route.objects.all().select_related("source", "destination")
     serializer_class = RouteSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    queryset = Route.objects.all()
+
+    def get_queryset(self):
+        queryset = Route.objects.all().select_related("source", "destination")
+        sources = self.request.query_params.get("source")
+
+        if sources:
+            source_ids = [int(str_id) for str_id in sources.split(",")]
+            queryset = queryset.filter(source__id__in=source_ids)
+
+        return queryset
 
 
 class JourneyViewSet(ModelViewSet):
