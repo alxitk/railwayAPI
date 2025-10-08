@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.template.defaultfilters import first
 from rest_framework import serializers
@@ -76,6 +77,15 @@ class JourneyDetailSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        data = super(TicketSerializer, self).validate(attrs=attrs)
+        Ticket.validate_ticket(
+            attrs["cargo_number"],
+            attrs["seat_number"],
+            attrs["journey"],
+            ValidationError
+        )
+        return data
     class Meta:
         model = Ticket
         fields = ("cargo_number", "seat_number", "journey", "order")
