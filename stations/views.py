@@ -1,10 +1,11 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from stations.models import Station, Crew, TrainType, Train, Route, Journey, Ticket
+from stations.models import Station, Crew, TrainType, Train, Route, Journey, Ticket, Order
 from stations.permissions import IsAdminOrIfAuthenticatedReadOnly
 from stations.serializers import StationSerializer, CrewSerializer, TrainTypeSerializer, TrainSerializer, \
-    RouteSerializer, JourneyListSerializer, JourneyDetailSerializer, JourneySerializer, TicketSerializer
+    RouteSerializer, JourneyListSerializer, JourneyDetailSerializer, JourneySerializer, TicketSerializer, \
+    OrderSerializer, OrderListSerializer
 
 
 class StationViewSet(GenericViewSet,
@@ -60,3 +61,24 @@ class JourneyViewSet(ModelViewSet):
 class TicketViewSet(ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+
+
+class OrderViewSet(mixins.ListModelMixin,
+                   mixins.CreateModelMixin,
+                   GenericViewSet,):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListSerializer
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+

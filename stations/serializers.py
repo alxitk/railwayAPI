@@ -1,7 +1,8 @@
+from django.db import transaction
 from django.template.defaultfilters import first
 from rest_framework import serializers
 
-from stations.models import Station, Crew, TrainType, Train, Route, Journey, Ticket
+from stations.models import Station, Crew, TrainType, Train, Route, Journey, Ticket, Order
 
 
 class StationSerializer(serializers.ModelSerializer):
@@ -77,5 +78,30 @@ class JourneyDetailSerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = "__all__"
+        fields = ("cargo_number", "seat_number", "journey", "order")
+        extra_kwargs = {
+            "order": {"required": False},
+        }
 
+
+class OrderSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=False, allow_empty=False)
+
+    class Meta:
+        model = Order
+        fields = ("id", "tickets", "created_at")
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            tickets_data = validated_data.pop("tickets")
+            order = Order.objects.create(**validated_data)
+            for ticket_data in tickets_data:
+                Ticket.objects.create(order=order, **ticket_data)
+            return order
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(read_only=False, many=True, allow_empty=False)
+    class Meta:
+        model = Order
+        fields = ("id", "tickets", "created_at")

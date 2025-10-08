@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from stations.models import Journey
 from stations.views import StationViewSet, CrewViewSet, TrainTypeViewSet, TrainViewSet, RouteViewSet, JourneyViewSet, \
-    TicketViewSet
+    TicketViewSet, OrderViewSet
 
 app_name = "stations"
 
@@ -15,6 +15,7 @@ router.register("trains", TrainViewSet)
 router.register("routes", RouteViewSet)
 router.register("journeys", JourneyViewSet)
 router.register("tickets", TicketViewSet)
+router.register("orders", OrderViewSet)
 
 
 urlpatterns = [path("", include(router.urls))]
