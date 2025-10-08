@@ -93,7 +93,7 @@ class Ticket(models.Model):
     cargo_number = models.IntegerField()
     seat_number = models.IntegerField()
     journey = models.ForeignKey(Journey, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
 
     class Meta:
         unique_together = ("cargo_number", "seat_number", "journey")
