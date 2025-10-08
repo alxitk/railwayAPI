@@ -33,7 +33,7 @@ class TrainTypeViewSet(GenericViewSet,
 
 
 class TrainViewSet(ModelViewSet):
-    queryset = Train.objects.all()
+    queryset = Train.objects.all().select_related("train_type")
     serializer_class = TrainSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
@@ -41,13 +41,19 @@ class TrainViewSet(ModelViewSet):
 class RouteViewSet(GenericViewSet,
                      mixins.CreateModelMixin,
                      mixins.ListModelMixin,):
-    queryset = Route.objects.all()
+    queryset = Route.objects.all().select_related("source", "destination")
     serializer_class = RouteSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class JourneyViewSet(ModelViewSet):
-    queryset = Journey.objects.all()
+    queryset = Journey.objects.select_related(
+        "train__train_type",
+        "route__source",
+        "route__destination"
+    ).prefetch_related(
+        "crew"
+    )
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
@@ -59,16 +65,16 @@ class JourneyViewSet(ModelViewSet):
 
 
 class TicketViewSet(ModelViewSet):
-    queryset = Ticket.objects.all()
+    queryset = Ticket.objects.all().select_related("journey", "order")
     serializer_class = TicketSerializer
 
 
 class OrderViewSet(mixins.ListModelMixin,
                    mixins.CreateModelMixin,
                    GenericViewSet,):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().select_related("user")
     serializer_class = OrderSerializer
-    # permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "list":
