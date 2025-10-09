@@ -1,3 +1,4 @@
+from django.db.models import F, Count
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -75,6 +76,16 @@ class JourneyViewSet(ModelViewSet):
         "crew"
     )
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.action == "list":
+            queryset = (
+                queryset
+                .select_related("train")
+                .annotate(tickets_available=F("train__places_in_cargo") - Count("tickets"))
+            ).order_by("id")
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
