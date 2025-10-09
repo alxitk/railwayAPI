@@ -1,5 +1,9 @@
+import pathlib
+import uuid
+
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 from rest_framework.exceptions import ValidationError
 
 from user.models import User
@@ -54,11 +58,16 @@ class TrainType(models.Model):
         return f"{self.name}"
 
 
+def image_upload_path(instance: "Train", filename: str) -> pathlib.Path:
+    filename = f"{slugify(instance.name)}-{uuid.uuid4()}" + pathlib.Path(filename).suffix
+    return pathlib.Path("upload/trains/") / pathlib.Path(filename)
+
 class Train(models.Model):
     name = models.CharField(max_length=100)
     cargo = models.IntegerField()
     places_in_cargo = models.IntegerField()
     train_type = models.ForeignKey(TrainType, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to="uploads/", null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} <UNK> {self.train_type}"
