@@ -32,9 +32,19 @@ class TrainSerializer(serializers.ModelSerializer):
         slug_field="name",
     )
 
+    image = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = Train
-        fields = ("id", "name", "cargo", "places_in_cargo", "train_type")
+        fields = ("id", "name", "cargo", "places_in_cargo", "train_type", "image")
+
+
+class TrainImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=True)
+
+    class Meta:
+        model = Train
+        fields = ("id", "image")
 
 
 class RouteSerializer(serializers.ModelSerializer):

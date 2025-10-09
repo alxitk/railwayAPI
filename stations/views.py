@@ -1,12 +1,14 @@
 from django.db.models import F, Count
-from rest_framework import mixins
+from rest_framework import mixins, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from stations.models import Station, Crew, TrainType, Train, Route, Journey, Ticket, Order
 from stations.permissions import IsAdminOrIfAuthenticatedReadOnly
 from stations.serializers import StationSerializer, CrewSerializer, TrainTypeSerializer, TrainSerializer, \
     RouteSerializer, JourneyListSerializer, JourneyDetailSerializer, JourneySerializer, TicketSerializer, \
-    OrderSerializer, OrderListSerializer
+    OrderSerializer, OrderListSerializer, TrainImageSerializer
 
 
 class StationViewSet(GenericViewSet,
@@ -34,9 +36,19 @@ class TrainTypeViewSet(GenericViewSet,
 
 
 class TrainViewSet(ModelViewSet):
-    queryset = Train.objects.all()
+    queryset = Train.objects.all().select_related("train_type")
     serializer_class = TrainSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+
+    @action(methods=["POST"], detail=True, url_path="upload-image")
+    def upload_image(self, request, pk=None):
+        train = self.get_object()
+        serializer = self.get_serializer(instance=train, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
         queryset = Train.objects.all().select_related("train_type")
@@ -47,6 +59,13 @@ class TrainViewSet(ModelViewSet):
             queryset = queryset.filter(train_type__id__in=train_type_ids)
 
         return queryset
+
+    def get_serializer_class(self):
+
+        if self.action == "upload_image":
+            return TrainImageSerializer
+
+        return TrainSerializer
 
 
 class RouteViewSet(GenericViewSet,
