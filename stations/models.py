@@ -1,5 +1,3 @@
-from itertools import count
-
 from django.conf import settings
 from django.db import models
 from rest_framework.exceptions import ValidationError
@@ -92,7 +90,7 @@ class Order(models.Model):
 class Ticket(models.Model):
     cargo_number = models.IntegerField()
     seat_number = models.IntegerField()
-    journey = models.ForeignKey(Journey, on_delete=models.CASCADE)
+    journey = models.ForeignKey(Journey, on_delete=models.CASCADE, related_name="tickets")
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="tickets")
 
     class Meta:
