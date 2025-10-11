@@ -30,6 +30,8 @@ class TrainSerializer(serializers.ModelSerializer):
         read_only=False,
         queryset=TrainType.objects.all(),
         slug_field="name",
+        required=False,
+        allow_null=True,
     )
 
     image = serializers.ImageField(required=False, allow_null=True)
@@ -75,6 +77,7 @@ class JourneyListSerializer(JourneySerializer):
     class Meta:
         model = Journey
         fields = ("route", "train", "crew", "tickets_available")
+
 
 class JourneyDetailSerializer(serializers.ModelSerializer):
     route = serializers.SlugRelatedField(
