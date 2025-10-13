@@ -1,0 +1,53 @@
+# --- System files ---
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.bak
+
+# --- Virtual environments ---
+venv/
+.venv/
+env/
+.env/
+Pipfile
+Pipfile.lock
+
+# --- Python build files ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Django specific ---
+*.log
+media/
+staticfiles/
+db.sqlite3
+
+# --- Docker ---
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# --- Test & coverage ---
+.coverage
+htmlcov/
+pytest_cache/
+.tox/
+.mypy_cache/
+.pytest_cache/
+.coverage.*
+nosetests.xml
+test-results/
+tests/__pycache__/
+
+# --- Mac OS specific ---
+**/.DS_Store
+.AppleDouble
+.LSOverride

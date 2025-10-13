@@ -61,17 +61,17 @@
   {
     "model": "stations.train",
     "pk": 1,
-    "fields": {"name": "Intercity+", "cargo_number": 10, "places_in_cargo": 50, "train_type": 1}
+    "fields": {"name": "Intercity+", "cargo": 10, "places_in_cargo": 50, "train_type": 1}
   },
   {
     "model": "stations.train",
     "pk": 2,
-    "fields": {"name": "Night Express", "cargo_number": 15, "places_in_cargo": 40, "train_type": 1}
+    "fields": {"name": "Night Express", "cargo": 15, "places_in_cargo": 40, "train_type": 1}
   },
   {
     "model": "stations.train",
     "pk": 3,
-    "fields": {"name": "CargoMaster", "cargo_number": 20, "places_in_cargo": 0, "train_type": 2}
+    "fields": {"name": "CargoMaster", "cargo": 20, "places_in_cargo": 0, "train_type": 2}
   },
 
   {
@@ -100,12 +100,12 @@
   {
     "model": "user.user",
     "pk": 1,
-    "fields": {"username": "alex", "email": "alex@example.com", "password": "pbkdf2_sha256$260000$test$hashed_pass"}
+    "fields": {"email": "alex@example.com", "password": "pbkdf2_sha256$260000$test$hashed_pass"}
   },
   {
     "model": "user.user",
     "pk": 2,
-    "fields": {"username": "maria", "email": "maria@example.com", "password": "pbkdf2_sha256$260000$test$hashed_pass"}
+    "fields": {"email": "maria@example.com", "password": "pbkdf2_sha256$260000$test$hashed_pass"}
   },
 
   {
